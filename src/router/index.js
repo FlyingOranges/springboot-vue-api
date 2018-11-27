@@ -23,7 +23,7 @@ const router = new Router({
       component: Login
     },
     {
-      path: '/api/list',
+      path: '/api/list/:id',
       name: 'ApiList',
       component: ApiList
     },

@@ -72,6 +72,7 @@ export default {
     return {
       jump_create: false,
       jump_list: false,
+      project_id: null
     }
   },
   created () {
@@ -86,13 +87,16 @@ export default {
       default:
         this.jump_list = true;
     }
+
+    this.project_id = localStorage.getItem("project_id").toString();
+
   },
   methods: {
     jumpCreate () {
-      this.$router.push({ name: 'ApiCreate' });
+      this.$router.push({ name: 'ApiCreate', query: { id: this.project_id } });
     },
     jumpList () {
-      this.$router.push({ name: 'ApiList' });
+      this.$router.push({ path: '/api/list/' + this.project_id });
     }
   }
 }

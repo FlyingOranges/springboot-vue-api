@@ -75,7 +75,7 @@
           <div class="content-project">
 
             <div class="l project-text" v-for="item in project_list">
-              <router-link to="/api/list" class="text-main tc ng-scope">
+              <router-link :to="{path:'/api/list/'+item.id}" class="text-main tc ng-scope">
                 <h4 class="project-name ng-binding">{{item.name}}</h4>
               </router-link>
               <p class="project_intro text-opacity text-black p10 ng-binding">{{item.info}}</p>

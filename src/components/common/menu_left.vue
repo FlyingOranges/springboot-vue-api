@@ -58,8 +58,8 @@
       <div class="border-bottom pb30 mb30 second-menu-list">
         <ul>
           <li v-bind:class="{ active : create_project }" v-on:click="createProject">创建新项目</li>
-          <li v-bind:class="{ active : all_projetct }" v-on:click="allProject">所有项目(0)</li>
-          <li v-bind:class="{ active : my_create_project }" v-on:click="myCreateProject">我创建的(0)</li>
+          <li v-bind:class="{ active : all_projetct }" v-on:click="allProject">所有项目</li>
+          <li v-bind:class="{ active : my_create_project }" v-on:click="myCreateProject">我创建的</li>
         </ul>
       </div>
     </div>

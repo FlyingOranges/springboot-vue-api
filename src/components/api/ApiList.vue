@@ -367,6 +367,12 @@ export default {
       msg: '欢迎使用vue.js'
     }
   },
+  created () {
+    //获取路由中的id
+    let id = this.$route.params.id;
+    localStorage.setItem("project_id", id); //存储到缓冲,添加信息时有用
+    console.log(id);
+  },
 }
 </script>
 
