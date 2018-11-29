@@ -248,18 +248,22 @@ export default {
       editData: {
         title: '添加接口',
         items: {
+          interface_project_id: null,
           interface_name: '',
           interface_use: "",
           interface_url: "",
           interface_params: [],
           interface_json: "",
           interface_note: "",
+          interface_type: ""
         }
       },
     }
   },
   created () {
     // this.textChange();
+    let id = this.$route.query.projectId; //获取路由参数
+    this.editData.items.interface_project_id = id;
   },
   methods: {
   }

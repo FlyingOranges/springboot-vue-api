@@ -8,7 +8,7 @@ let baseUrl = 'http://localhost:13001';
 axios.interceptors.request.use(function (config) {
   let token = null;
   var userInfoJson = localStorage.getItem("UserInfo");
-  if(userInfoJson != undefined){
+  if (userInfoJson != undefined) {
     let userInfo = JSON.parse(userInfoJson.toString());
     token = userInfo.token;
   }
@@ -58,3 +58,8 @@ export const requestCreateProject = params => {
 export const requestListProject = params => {
   return axios.post(`${baseUrl}/project/list`, params).then(res => res.data);
 };
+
+//新增接口主体信息接口
+export const requestCreateInterface = params => {
+  return axios.post(`${baseUrl}/interface/create`, params).then(res => res.data);
+}

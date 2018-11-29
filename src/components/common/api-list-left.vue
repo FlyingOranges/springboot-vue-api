@@ -93,7 +93,7 @@ export default {
   },
   methods: {
     jumpCreate () {
-      this.$router.push({ name: 'ApiCreate', query: { id: this.project_id } });
+      this.$router.push({ name: 'ApiCreate', query: { projectId: this.project_id } });
     },
     jumpList () {
       this.$router.push({ path: '/api/list/' + this.project_id });

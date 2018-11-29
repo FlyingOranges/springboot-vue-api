@@ -204,28 +204,29 @@
             <div class="interface-group interface-name-group">
               <div class="interface-name">接口名称:</div>
               <div class="interface-text">
-                <input class="api-input" placeholder="必填(非中文),示例 getOrderList" v-model="editData.items.interface_name">
+                <input class="api-input" placeholder="必填(非中文),示例 getOrderList" v-model="edit.items.interface_name">
               </div>
             </div>
 
             <div class="interface-group interface-name-group">
               <div class="interface-name">接口用途:</div>
               <div class="interface-text">
-                <input class="api-input" placeholder="必填,示例 获取订单列表数据" v-model="editData.items.interface_use">
+                <input class="api-input" placeholder="必填,示例 获取订单列表数据" v-model="edit.items.interface_use">
               </div>
             </div>
 
             <div class="interface-group interface-name-group">
               <div class="interface-name">请求方式:</div>
               <div class="interface-text">
-                <select class="api-select">
-                  <option>GET</option>
-                  <option selected>POST</option>
-                  <option>PUT</option>
-                  <option>DELETE</option>
-                  <option>PATCH</option>
-                  <option>HEAD</option>
-                  <option>OPTIONS</option>
+                <select class="api-select" v-model="edit.items.interface_type">
+                  <option selected value="">请选择请求方式</option>
+                  <option value="1">GET</option>
+                  <option value="2">POST</option>
+                  <option value="3">PUT</option>
+                  <option value="4">DELETE</option>
+                  <option value="5">PATCH</option>
+                  <option value="6">HEAD</option>
+                  <option value="7">OPTIONS</option>
                 </select>
               </div>
             </div>
@@ -233,7 +234,7 @@
             <div class="interface-group interface-name-group">
               <div class="interface-name">接口地址:</div>
               <div class="interface-text">
-                <input class="api-input" placeholder="必填,示例 /order/list" v-model="editData.items.interface_url">
+                <input class="api-input" placeholder="必填,示例 /order/list" v-model="edit.items.interface_url">
               </div>
             </div>
 
@@ -244,32 +245,32 @@
               </div>
               <div class="interface-text params-text">
                 <table class="params-table">
-                  <tr v-for="(item, key) in editData.items.interface_params">
+                  <tr v-for="(item, key) in edit.items.interface_params">
                     <th>
-                      <input type="text" placeholder="参数名(key)" v-model="item.key_name">
+                      <input type="text" placeholder="参数名(key)" v-model="item.params_name">
                     </th>
                     <th>
-                      <select>
-                        <option>参数类型</option>
-                        <option>int</option>
-                        <option>long</option>
-                        <option>float</option>
-                        <option>string</option>
-                        <option>boolen</option>
-                        <option>file</option>
-                        <option>array</option>
-                        <option>json</option>
-                        <option>xml</option>
+                      <select v-model="item.params_type">
+                        <option value="">参数类型</option>
+                        <option value="1">int</option>
+                        <option value="2">long</option>
+                        <option value="3">float</option>
+                        <option value="4">string</option>
+                        <option value="5">boolen</option>
+                        <option value="6">file</option>
+                        <option value="7">array</option>
+                        <option value="8">json</option>
+                        <option value="9">xml</option>
                       </select>
                     </th>
                     <th>
-                      <select>
-                        <option>必须传入</option>
-                        <option>可选传入</option>
+                      <select v-model="item.params_necessary">
+                        <option value="1">必须传入</option>
+                        <option value="0">可选传入</option>
                       </select>
                     </th>
                     <th>
-                      <input class="params-intpu-width-all" type="text" placeholder="参数解释" v-model="item.explain">
+                      <input class="params-intpu-width-all" type="text" placeholder="参数解释" v-model="item.params_explain">
                     </th>
                     <th>
                       <button type="button" v-on:click="delParams(key)">X</button>
@@ -284,7 +285,7 @@
               <div class="interface-name">返回数据:</div>
               <div class="interface-text">
                 <div class="reponse-data-half">
-                  <textarea v-model="editData.items.interface_json" v-on:input="textChange" placeholder="请输入返回的json字符串"></textarea>
+                  <textarea v-model="edit.items.interface_json" v-on:input="textChange" placeholder="请输入返回的json字符串"></textarea>
                 </div>
                 <div class="reponse-data-half">
                   <pre v-html="jsonObj"></pre>
@@ -295,24 +296,27 @@
             <div class="interface-group interface-name-group">
               <div class="interface-name">接口备注:</div>
               <div class="interface-text">
-                <textarea class="reponse-note" v-html="editData.items.interface_note" placeholder="请输入接口备注"></textarea>
+                <textarea class="reponse-note" v-model="edit.items.interface_note" placeholder="请输入接口备注"></textarea>
               </div>
             </div>
 
             <div class="interface-group interface-name-group">
               <div class="interface-name"></div>
               <div class="interface-text">
-                <button class="interface-submit-button">确定</button>
+                <button class="interface-submit-button" v-on:click="submitClick">确定</button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <v-dialog />
   </div>
 </template>
 
 <script>
+import { requestCreateInterface } from '../../utils/http.js';
+
 export default {
   props: [
     'editData'
@@ -320,6 +324,7 @@ export default {
   data () {
     return {
       jsonObj: '',
+      edit: this.editData
     }
   },
   mounted () {
@@ -327,6 +332,73 @@ export default {
     this.textChange();
   },
   methods: {
+    submitClick () {
+
+      var params = this.fromRequest();
+      if (!params) {
+        return false;
+      }
+
+      requestCreateInterface(params).then(res => {
+        console.log('success');
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    fromRequest () {
+      var self = this;
+      var requestData = {};
+
+      if (!this.editData.items.interface_name.length) { this.msgAlert('请输入接口名称'); return false; }
+      requestData['interface_name'] = this.editData.items.interface_name;
+
+      if (!this.editData.items.interface_use.length) { this.msgAlert('请输入接口用途'); return false; }
+      requestData['interface_use'] = this.editData.items.interface_use;
+
+      if (!this.editData.items.interface_type.length) { this.msgAlert('请选择请求方式'); return false; }
+      requestData['interface_type'] = this.editData.items.interface_type;
+
+      if (!this.editData.items.interface_url.length) { this.msgAlert('请输入接口地址'); return false; }
+      requestData['interface_url'] = this.editData.items.interface_url;
+
+      if (!this.editData.items.interface_json.length) { this.msgAlert('请输入返回数据'); return false; }
+      requestData['interface_json'] = this.editData.items.interface_json;
+
+      requestData['interface_project_id'] = this.editData.items.interface_project_id;
+      requestData['interface_note'] = this.editData.items.interface_note;
+
+      var paramStatus = true;
+      var paramsItem = this.editData.items.interface_params;
+      Object.keys(paramsItem).map(function (key) {
+        if (!paramsItem[key].params_name) {
+          paramStatus = false;
+          self.msgAlert('请输入参数名(key)');
+          return;
+        }
+        if (!paramsItem[key].params_type.length) {
+          paramStatus = false;
+          self.msgAlert('请选择参数类型');
+          return;
+        }
+        if (!paramsItem[key].params_explain) {
+          paramStatus = false;
+          self.msgAlert('请输入参数解释');
+          return;
+        }
+      });
+
+      if (paramStatus) {
+
+        console.log(paramsItem);
+        // requestData.push('interface_params',JSON.stringify(paramsItem));
+        requestData['interface_params'] = JSON.stringify(paramsItem);
+
+        // requestData['interface_params'] = paramsItem;
+      }
+
+      console.log(requestData);
+      return requestData;
+    },
     JsonToString: (json) => {
       var jObj = JSON.parse(json);
       var xxx = JSON.stringify(jObj, null, 4);
@@ -334,7 +406,7 @@ export default {
       return xxx;
     },
     addParams () {
-      this.editData.items.interface_params.push({});
+      this.editData.items.interface_params.push({ params_type: "", params_necessary: 1 });
     },
     delParams (key) {
       this.editData.items.interface_params.splice(key, 1);
@@ -347,6 +419,9 @@ export default {
     },
     //判断是否为json字符串
     isJSON (str) {
+      if (str.length < 1) {
+        return false;
+      }
       if (typeof str == 'string') {
         try {
           var obj = JSON.parse(str);
@@ -356,10 +431,26 @@ export default {
             return false;
           }
         } catch (e) {
-          console.log('error：' + str + '!!!' + e);
+          // console.log('error：' + str + '!!!' + e);
           return false;
         }
       }
+    },
+    msgAlert (msg) {
+      this.$modal.show('dialog', {
+        title: '警告!',
+        text: msg,
+        buttons: [
+          {
+            title: '',       // Button title
+            default: true,    // Will be triggered by default if 'Enter' pressed.
+            handler: () => { } // Button click handler
+          },
+          {
+            title: '关闭'
+          }
+        ]
+      })
     }
   }
 }

@@ -97,7 +97,6 @@ import vHeader from './common/head';
 import vFooter from './common/footer';
 import { requestLogin } from '../utils/http.js';
 import { error } from 'util';
-// import '../utils/http.js';
 
 export default {
   name: 'Login',
