@@ -333,14 +333,19 @@ export default {
   },
   methods: {
     submitClick () {
-
+      var self = this;
       var params = this.fromRequest();
       if (!params) {
         return false;
       }
 
       requestCreateInterface(params).then(res => {
-        console.log('success');
+        if(res.code == 0){
+          self.msgSuccessAlert(res.message);
+          return false;
+        }
+
+        self.msgAlert(res.message);
       }).catch(error => {
         console.log(error);
       });
@@ -388,15 +393,9 @@ export default {
       });
 
       if (paramStatus) {
-
-        console.log(paramsItem);
-        // requestData.push('interface_params',JSON.stringify(paramsItem));
         requestData['interface_params'] = JSON.stringify(paramsItem);
-
-        // requestData['interface_params'] = paramsItem;
       }
 
-      console.log(requestData);
       return requestData;
     },
     JsonToString: (json) => {
@@ -439,6 +438,22 @@ export default {
     msgAlert (msg) {
       this.$modal.show('dialog', {
         title: '警告!',
+        text: msg,
+        buttons: [
+          {
+            title: '',       // Button title
+            default: true,    // Will be triggered by default if 'Enter' pressed.
+            handler: () => { } // Button click handler
+          },
+          {
+            title: '关闭'
+          }
+        ]
+      })
+    },
+    msgSuccessAlert (msg) {
+      this.$modal.show('dialog', {
+        title: '提示!',
         text: msg,
         buttons: [
           {
