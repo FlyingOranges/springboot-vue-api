@@ -192,10 +192,7 @@
 
             <div class="content-api-list">
 
-              <div
-                class="api-group-list"
-                v-for="(item, key) in this.data"
-              >
+              <div class="api-group-list" v-for="(item, key) in this.data">
                 <div class="api-title">
                   <span
                     class="span-method span-get"
@@ -343,7 +340,10 @@ export default {
             handler: () => {
               var params = { id: id };
               requestInterfaceDelete(params).then(res => {
-                console.log(res);
+                if(res.code == 0){
+                  self.searchClick();
+                  self.$modal.hide('dialog');
+                }
               }).catch(error => {
                 console.log(error);
               });
