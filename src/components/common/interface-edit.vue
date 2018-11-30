@@ -204,22 +204,36 @@
             <div class="interface-group interface-name-group">
               <div class="interface-name">接口名称:</div>
               <div class="interface-text">
-                <input class="api-input" placeholder="必填(非中文),示例 getOrderList" v-model="edit.items.interface_name">
+                <input
+                  class="api-input"
+                  placeholder="必填(非中文),示例 getOrderList"
+                  v-model="edit.items.interface_name"
+                >
               </div>
             </div>
 
             <div class="interface-group interface-name-group">
               <div class="interface-name">接口用途:</div>
               <div class="interface-text">
-                <input class="api-input" placeholder="必填,示例 获取订单列表数据" v-model="edit.items.interface_use">
+                <input
+                  class="api-input"
+                  placeholder="必填,示例 获取订单列表数据"
+                  v-model="edit.items.interface_use"
+                >
               </div>
             </div>
 
             <div class="interface-group interface-name-group">
               <div class="interface-name">请求方式:</div>
               <div class="interface-text">
-                <select class="api-select" v-model="edit.items.interface_type">
-                  <option selected value="">请选择请求方式</option>
+                <select
+                  class="api-select"
+                  v-model="edit.items.interface_type"
+                >
+                  <option
+                    selected
+                    value=""
+                  >请选择请求方式</option>
                   <option value="1">GET</option>
                   <option value="2">POST</option>
                   <option value="3">PUT</option>
@@ -234,20 +248,31 @@
             <div class="interface-group interface-name-group">
               <div class="interface-name">接口地址:</div>
               <div class="interface-text">
-                <input class="api-input" placeholder="必填,示例 /order/list" v-model="edit.items.interface_url">
+                <input
+                  class="api-input"
+                  placeholder="必填,示例 /order/list"
+                  v-model="edit.items.interface_url"
+                >
               </div>
             </div>
 
             <div class="interface-group interface-name-group">
               <div class="interface-name">输入参数:</div>
               <div class="interface-add-button">
-                <button class="add-button" v-on:click="addParams">+</button>
+                <button
+                  class="add-button"
+                  v-on:click="addParams"
+                >+</button>
               </div>
               <div class="interface-text params-text">
                 <table class="params-table">
                   <tr v-for="(item, key) in edit.items.interface_params">
                     <th>
-                      <input type="text" placeholder="参数名(key)" v-model="item.params_name">
+                      <input
+                        type="text"
+                        placeholder="参数名(key)"
+                        v-model="item.params_name"
+                      >
                     </th>
                     <th>
                       <select v-model="item.params_type">
@@ -270,10 +295,18 @@
                       </select>
                     </th>
                     <th>
-                      <input class="params-intpu-width-all" type="text" placeholder="参数解释" v-model="item.params_explain">
+                      <input
+                        class="params-intpu-width-all"
+                        type="text"
+                        placeholder="参数解释"
+                        v-model="item.params_explain"
+                      >
                     </th>
                     <th>
-                      <button type="button" v-on:click="delParams(key)">X</button>
+                      <button
+                        type="button"
+                        v-on:click="delParams(key)"
+                      >X</button>
                     </th>
                   </tr>
 
@@ -285,7 +318,11 @@
               <div class="interface-name">返回数据:</div>
               <div class="interface-text">
                 <div class="reponse-data-half">
-                  <textarea v-model="edit.items.interface_json" v-on:input="textChange" placeholder="请输入返回的json字符串"></textarea>
+                  <textarea
+                    v-model="edit.items.interface_json"
+                    v-on:input="textChange"
+                    placeholder="请输入返回的json字符串"
+                  ></textarea>
                 </div>
                 <div class="reponse-data-half">
                   <pre v-html="jsonObj"></pre>
@@ -296,14 +333,21 @@
             <div class="interface-group interface-name-group">
               <div class="interface-name">接口备注:</div>
               <div class="interface-text">
-                <textarea class="reponse-note" v-model="edit.items.interface_note" placeholder="请输入接口备注"></textarea>
+                <textarea
+                  class="reponse-note"
+                  v-model="edit.items.interface_note"
+                  placeholder="请输入接口备注"
+                ></textarea>
               </div>
             </div>
 
             <div class="interface-group interface-name-group">
               <div class="interface-name"></div>
               <div class="interface-text">
-                <button class="interface-submit-button" v-on:click="submitClick">确定</button>
+                <button
+                  class="interface-submit-button"
+                  v-on:click="submitClick"
+                >确定</button>
               </div>
             </div>
           </div>
@@ -315,7 +359,7 @@
 </template>
 
 <script>
-import { requestCreateInterface } from '../../utils/http.js';
+import { requestCreateInterface, requestInterfaceEdit } from '../../utils/http.js';
 
 export default {
   props: [
@@ -327,9 +371,17 @@ export default {
       edit: this.editData
     }
   },
+  created () {
+  },
   mounted () {
     //页面完成渲染之后,执行json字符串转成格式化json,并打印在页面上
     this.textChange();
+  },
+  updated: function () {
+    var self = this;
+    this.$nextTick(function () {
+      self.textChange();
+    });
   },
   methods: {
     submitClick () {
@@ -339,38 +391,53 @@ export default {
         return false;
       }
 
-      requestCreateInterface(params).then(res => {
-        if(res.code == 0){
-          self.msgSuccessAlert(res.message);
-          return false;
-        }
-
-        self.msgAlert(res.message);
-      }).catch(error => {
-        console.log(error);
-      });
+      if (params.id == undefined) {
+        requestCreateInterface(params).then(res => {
+          if (res.code == 0) {
+            self.msgSuccessAlert(res.message);
+            return false;
+          }
+          self.msgAlert(res.message);
+        }).catch(error => {
+          console.log(error);
+        });
+      } else {
+        requestInterfaceEdit(params).then(res => {
+          if (res.code == 0) {
+            self.msgSuccessAlert(res.message);
+            return false;
+          }
+          self.msgAlert(res.message);
+        }).catch(error => {
+          console.log(error);
+        });
+      }
     },
     fromRequest () {
       var self = this;
       var requestData = {};
 
-      if (!this.editData.items.interface_name.length) { this.msgAlert('请输入接口名称'); return false; }
+      if (!this.editData.items.interface_name) { this.msgAlert('请输入接口名称'); return false; }
       requestData['interface_name'] = this.editData.items.interface_name;
 
-      if (!this.editData.items.interface_use.length) { this.msgAlert('请输入接口用途'); return false; }
+      if (!this.editData.items.interface_use) { this.msgAlert('请输入接口用途'); return false; }
       requestData['interface_use'] = this.editData.items.interface_use;
 
-      if (!this.editData.items.interface_type.length) { this.msgAlert('请选择请求方式'); return false; }
+      if (!this.editData.items.interface_type) { this.msgAlert('请选择请求方式'); return false; }
       requestData['interface_type'] = this.editData.items.interface_type;
 
-      if (!this.editData.items.interface_url.length) { this.msgAlert('请输入接口地址'); return false; }
+      if (!this.editData.items.interface_url) { this.msgAlert('请输入接口地址'); return false; }
       requestData['interface_url'] = this.editData.items.interface_url;
 
-      if (!this.editData.items.interface_json.length) { this.msgAlert('请输入返回数据'); return false; }
+      if (!this.editData.items.interface_json) { this.msgAlert('请输入返回数据'); return false; }
       requestData['interface_json'] = this.editData.items.interface_json;
 
       requestData['interface_project_id'] = this.editData.items.interface_project_id;
       requestData['interface_note'] = this.editData.items.interface_note;
+
+      if (this.editData.items.id) {
+        requestData['id'] = this.editData.items.id;
+      }
 
       var paramStatus = true;
       var paramsItem = this.editData.items.interface_params;
@@ -380,7 +447,7 @@ export default {
           self.msgAlert('请输入参数名(key)');
           return;
         }
-        if (!paramsItem[key].params_type.length) {
+        if (!paramsItem[key].params_type) {
           paramStatus = false;
           self.msgAlert('请选择参数类型');
           return;
@@ -418,7 +485,7 @@ export default {
     },
     //判断是否为json字符串
     isJSON (str) {
-      if (str.length < 1) {
+      if (str == '') {
         return false;
       }
       if (typeof str == 'string') {

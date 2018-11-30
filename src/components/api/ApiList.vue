@@ -262,7 +262,10 @@
                       编辑
                     </router-link>
                   </button>
-                  <button class="api-button api-delete-button">删除</button>
+                  <button
+                    class="api-button api-delete-button"
+                    v-on:click="deleteDb(item.id)"
+                  >删除</button>
                 </div>
               </div>
             </div>
@@ -273,6 +276,8 @@
       </div>
     </div>
 
+    <v-dialog />
+
   </div>
 </template>
 
@@ -281,7 +286,7 @@ import vHeader from './../common/head';
 import vFooter from './../common/footer';
 import vLeftNavbar from './../common/navbar_left';
 import vApiLIstLeft from './../common/api-list-left';
-import { requestInterfaceList } from '../../utils/http.js';
+import { requestInterfaceList, requestInterfaceDelete } from '../../utils/http.js';
 
 export default {
   name: 'ApiList',
@@ -310,6 +315,10 @@ export default {
     this.setDefaultData(params);
   },
   methods: {
+    deleteDb (id) {
+      this.msgCheckMessage('是否删除当前接口？', id);
+      console.log(id);
+    },
     searchClick () {
       var params = { project_id: this.project_id, search: this.search };
       this.setDefaultData(params);
@@ -321,6 +330,30 @@ export default {
       }).catch(error => {
         console.log(error);
       });
+    },
+    msgCheckMessage (msg, id) {
+      var self = this;
+      this.$modal.show('dialog', {
+        title: '警告!',
+        text: msg,
+        buttons: [
+          {
+            title: '确定删除',       // Button title
+            default: true,    // Will be triggered by default if 'Enter' pressed.
+            handler: () => {
+              var params = { id: id };
+              requestInterfaceDelete(params).then(res => {
+                console.log(res);
+              }).catch(error => {
+                console.log(error);
+              });
+            } // Button click handler
+          },
+          {
+            title: '关闭'
+          }
+        ]
+      })
     }
   }
 }

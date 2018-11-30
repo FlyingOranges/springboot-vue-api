@@ -46,6 +46,7 @@ import vFooter from './../common/footer';
 import vLeftNavbar from './../common/navbar_left';
 import vApiLIstLeft from './../common/api-list-left';
 import vInterfaceEdit from './../common/interface-edit';
+import { requestInterfaceInfo } from '../../utils/http.js';
 
 export default {
   name: 'ApiInfo',
@@ -58,25 +59,31 @@ export default {
   },
   data () {
     return {
-
-      jsonObj: null,
-      note: null,
-      responseJson: null,
-      paramsData: [],
       editData: {
         title: '接口编辑',
-        items: {
-          interface_name: '接口名称 输入框得地方啦',
-          interface_use: "接口用途 输入框得地方啦",
-          interface_url: "接口地址 输入框得地方啦",
-          interface_params: [],
-          interface_json: "{}",
-          interface_note: "接口备注 输入框的地方啦",
-        }
+        items: {}
       }
     }
   },
   created () {
+    let id = this.$route.params.id;
+    var params = { id: id };
+
+    requestInterfaceInfo(params).then(res => {
+      var resdata = res.data;
+      this.editData.items = {
+        id: resdata.id,
+        interface_name: resdata.interfaceName,
+        interface_use: resdata.interfaceUse,
+        interface_url: resdata.interfaceUrl,
+        interface_params: JSON.parse(resdata.interfaceParams),
+        interface_type: resdata.interfaceType,
+        interface_json: resdata.interfaceJson,
+        interface_note: resdata.interfaceNote,
+      };
+    }).catch(error => {
+      console.log(error);
+    });
   },
 
 }

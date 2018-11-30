@@ -66,10 +66,20 @@ export const requestCreateInterface = params => {
 
 //获取接口列表信息接口
 export const requestInterfaceList = params => {
-  return axios.post(`${baseUrl}/interface/list`,params).then(res => res.data);
+  return axios.post(`${baseUrl}/interface/list`, params).then(res => res.data);
 }
 
 //获取接口详情信息接口
-export const requestInterfaceInfo = params =>{
-  return axios.post(`${baseUrl}/interface/info`,params).then(res => res.data);
+export const requestInterfaceInfo = params => {
+  return axios.post(`${baseUrl}/interface/info`, params).then(res => res.data);
+}
+
+//编辑接口信息接口
+export const requestInterfaceEdit = params => {
+  return axios.post(`${baseUrl}/interface/edit`, params).then(res => res.data);
+}
+
+//删除接口信息
+export const requestInterfaceDelete = params => {
+  return axios.post(`${baseUrl}/interface/delete`, params).then(res => res.data);
 }
