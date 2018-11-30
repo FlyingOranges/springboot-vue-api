@@ -63,3 +63,13 @@ export const requestListProject = params => {
 export const requestCreateInterface = params => {
   return axios.post(`${baseUrl}/interface/create`, params).then(res => res.data);
 }
+
+//获取接口列表信息接口
+export const requestInterfaceList = params => {
+  return axios.post(`${baseUrl}/interface/list`,params).then(res => res.data);
+}
+
+//获取接口详情信息接口
+export const requestInterfaceInfo = params =>{
+  return axios.post(`${baseUrl}/interface/info`,params).then(res => res.data);
+}

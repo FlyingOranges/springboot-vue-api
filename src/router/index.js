@@ -28,7 +28,7 @@ const router = new Router({
       component: ApiList
     },
     {
-      path: '/api/info',
+      path: '/api/info/:id',
       name: 'ApiInfo',
       component: ApiInfo
     },
@@ -38,7 +38,7 @@ const router = new Router({
       component: ApiCreate
     },
     {
-      path: '/api/edit',
+      path: '/api/edit/:id',
       name: 'ApiEdit',
       component: ApiEdit
     },

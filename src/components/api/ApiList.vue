@@ -55,7 +55,7 @@
   background-color: #05aa88;
   border-radius: 50px;
   outline: none;
-  color: #666;
+  color: #fff;
 }
 .content-api-list {
   margin-top: 20px;
@@ -179,163 +179,92 @@
           <div class="content-project">
 
             <div class="content-retrieve">
-              <input type="text" placeholder="搜索接口">
-              <button type="button">检索</button>
+              <input
+                type="text"
+                placeholder="搜索接口"
+                v-model="search"
+              >
+              <button
+                type="button"
+                v-on:click='searchClick'
+              >检索</button>
             </div>
 
             <div class="content-api-list">
 
-              <div class="api-group-list">
+              <div
+                class="api-group-list"
+                v-for="(item, key) in this.data"
+              >
                 <div class="api-title">
-                  <span class="span-method span-get">
+                  <span
+                    class="span-method span-get"
+                    v-if="item.interfaceType == 1"
+                  >
                     GET
                   </span>
+
+                  <span
+                    class="span-method span-post"
+                    v-else-if="item.interfaceType == 2"
+                  >
+                    POST
+                  </span>
+
+                  <span
+                    class="span-method span-put"
+                    v-else-if="item.interfaceType == 3"
+                  >
+                    PUT
+                  </span>
+
+                  <span
+                    v-else-if="item.interfaceType == 4"
+                    class="span-method span-delete"
+                  >
+                    DELETE
+                  </span>
+
+                  <span
+                    class="span-method span-patch"
+                    v-else-if="item.interfaceType == 5"
+                  >
+                    PATCH
+                  </span>
+
+                  <span
+                    class="span-method span-head"
+                    v-else-if="item.interfaceType == 6"
+                  >
+                    HEAD
+                  </span>
+
+                  <span
+                    class="span-method span-options"
+                    v-else-if="item.interfaceType == 7"
+                  >
+                    OPTIONS
+                  </span>
+
                 </div>
                 <div class="api-group">
-                  <router-link to="">用户模块 - api_xxx</router-link>
+                  <router-link to="">{{ item.interfaceName }}</router-link>
                 </div>
-                <div class="api-info">获取订单列表数据</div>
+                <div class="api-info">{{ item.interfaceUse }}</div>
                 <div class="api-action">
                   <button class="api-button api-info-button">
-                    <router-link to="/api/info">
+                    <router-link :to="{path:'/api/info/'+ item.id}">
                       详情
                     </router-link>
                   </button>
                   <button class="api-button api-edit-button">
-                    <router-link to="/api/edit">
+                    <router-link :to="{path:'/api/edit/'+ item.id}">
                       编辑
                     </router-link>
                   </button>
                   <button class="api-button api-delete-button">删除</button>
                 </div>
               </div>
-
-              <div class="api-group-list">
-                <div class="api-title">
-                  <span class="span-method span-post">
-                    POST
-                  </span>
-                </div>
-                <div class="api-group">
-                  <router-link to="">接口名称</router-link>
-                </div>
-                <div class="api-info">接口用途</div>
-                <div class="api-action">
-                  <button class="api-button api-info-button">
-                    <router-link to="/api/info">
-                      详情
-                    </router-link>
-                  </button>
-                  <button class="api-button api-edit-button">编辑</button>
-                  <button class="api-button api-delete-button">删除</button>
-                </div>
-              </div>
-
-              <div class="api-group-list">
-                <div class="api-title">
-                  <span class="span-method span-put">
-                    PUT
-                  </span>
-                </div>
-                <div class="api-group">
-                  <router-link to="">接口名称</router-link>
-                </div>
-                <div class="api-info">接口用途</div>
-                <div class="api-action">
-                  <button class="api-button api-info-button">
-                    <router-link to="/api/info">
-                      详情
-                    </router-link>
-                  </button>
-                  <button class="api-button api-edit-button">编辑</button>
-                  <button class="api-button api-delete-button">删除</button>
-                </div>
-              </div>
-
-              <div class="api-group-list">
-                <div class="api-title">
-                  <span class="span-method span-delete">
-                    DELETE
-                  </span>
-                </div>
-                <div class="api-group">
-                  <router-link to="">接口名称</router-link>
-                </div>
-                <div class="api-info">接口用途</div>
-                <div class="api-action">
-                  <button class="api-button api-info-button">
-                    <router-link to="/api/info">
-                      详情
-                    </router-link>
-                  </button>
-                  <button class="api-button api-edit-button">编辑</button>
-                  <button class="api-button api-delete-button">删除</button>
-                </div>
-              </div>
-
-              <div class="api-group-list">
-                <div class="api-title">
-                  <span class="span-method span-patch">
-                    PATCH
-                  </span>
-                </div>
-                <div class="api-group">
-                  <router-link to="">接口名称</router-link>
-                </div>
-                <div class="api-info">接口用途</div>
-                <div class="api-action">
-                  <button class="api-button api-info-button">
-                    <router-link to="/api/info">
-                      详情
-                    </router-link>
-                  </button>
-                  <button class="api-button api-edit-button">编辑</button>
-                  <button class="api-button api-delete-button">删除</button>
-                </div>
-              </div>
-
-              <div class="api-group-list">
-                <div class="api-title">
-                  <span class="span-method span-head">
-                    HEAD
-                  </span>
-                </div>
-                <div class="api-group">
-                  <router-link to="">接口名称</router-link>
-                </div>
-                <div class="api-info">接口用途</div>
-                <div class="api-action">
-                  <button class="api-button api-info-button">
-                    <router-link to="/api/info">
-                      详情
-                    </router-link>
-                  </button>
-                  <button class="api-button api-edit-button">编辑</button>
-                  <button class="api-button api-delete-button">删除</button>
-                </div>
-              </div>
-
-              <div class="api-group-list">
-                <div class="api-title">
-                  <span class="span-method span-options">
-                    OPTIONS
-                  </span>
-                </div>
-                <div class="api-group">
-                  <router-link to="">接口名称</router-link>
-                </div>
-                <div class="api-info">接口用途</div>
-                <div class="api-action">
-                  <button class="api-button api-info-button">
-                    <router-link to="/api/info">
-                      详情
-                    </router-link>
-                  </button>
-                  <button class="api-button api-edit-button">编辑</button>
-                  <button class="api-button api-delete-button">删除</button>
-                </div>
-              </div>
-
             </div>
 
           </div>
@@ -352,6 +281,7 @@ import vHeader from './../common/head';
 import vFooter from './../common/footer';
 import vLeftNavbar from './../common/navbar_left';
 import vApiLIstLeft from './../common/api-list-left';
+import { requestInterfaceList } from '../../utils/http.js';
 
 export default {
   name: 'ApiList',
@@ -364,15 +294,35 @@ export default {
   data () {
     return {
       title: '接口列表',
-      msg: '欢迎使用vue.js'
+      msg: '欢迎使用vue.js',
+      search: '',
+      data: null,
+      project_id: null,
     }
   },
   created () {
     //获取路由中的id
     let id = this.$route.params.id;
     localStorage.setItem("project_id", id); //存储到缓冲,添加信息时有用
-    console.log(id);
+
+    this.project_id = id;
+    var params = { project_id: id };
+    this.setDefaultData(params);
   },
+  methods: {
+    searchClick () {
+      var params = { project_id: this.project_id, search: this.search };
+      this.setDefaultData(params);
+    },
+    setDefaultData (params) {
+      requestInterfaceList(params).then(res => {
+        console.log(res);
+        this.data = res.data;
+      }).catch(error => {
+        console.log(error);
+      });
+    }
+  }
 }
 </script>
 

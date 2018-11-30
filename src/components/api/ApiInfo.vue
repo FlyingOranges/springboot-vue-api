@@ -107,25 +107,52 @@
             <div class="content-api-list">
               <div class="interface-group interface-name-group">
                 <div class="interface-name">接口名称:</div>
-                <div class="interface-text">api_xxx</div>
+                <div class="interface-text">{{ data.interfaceName }}</div>
               </div>
 
               <div class="interface-group interface-name-group">
                 <div class="interface-name">接口用途:</div>
-                <div class="interface-text">获取订单用户信息</div>
+                <div class="interface-text">{{ data.interfaceUse }}</div>
               </div>
 
               <div class="interface-group interface-name-group">
                 <div class="interface-name">请求方式:</div>
-                <div class="interface-text">GET</div>
+                <div
+                  class="interface-text"
+                  v-if="data.interfaceType == 1"
+                >GET</div>
+                <div
+                  class="interface-text"
+                  v-else-if="data.interfaceType == 2"
+                >POST</div>
+                <div
+                  class="interface-text"
+                  v-else-if="data.interfaceType == 3"
+                >PUT</div>
+                <div
+                  class="interface-text"
+                  v-else-if="data.interfaceType == 4"
+                >DELETE</div>
+                <div
+                  class="interface-text"
+                  v-else-if="data.interfaceType == 5"
+                >PATCH</div>
+                <div
+                  class="interface-text"
+                  v-else-if="data.interfaceType == 6"
+                >HEAD</div>
+                <div
+                  class="interface-text"
+                  v-else-if="data.interfaceType == 7"
+                >OPTIONS</div>
               </div>
 
               <div class="interface-group interface-name-group">
                 <div class="interface-name">接口地址:</div>
-                <div class="interface-text">/get/order/user</div>
+                <div class="interface-text">{{ data.interfaceUrl }}</div>
               </div>
 
-              <div class="interface-group interface-name-group">
+              <div class="interface-group interface-name-group" v-if="data.interfaceParams != '[]'">
                 <div class="interface-name">输入参数:</div>
                 <div class="interface-text">
                   <table class="params-table">
@@ -136,18 +163,20 @@
                       <th>参数解释</th>
                     </tr>
 
-                    <tr>
-                      <td>name</td>
-                      <td>string</td>
-                      <td>yes</td>
-                      <td>用户姓名</td>
-                    </tr>
-
-                    <tr>
-                      <td>sex</td>
-                      <td>int</td>
-                      <td>no</td>
-                      <td>用户性别(1男 2女 0未知)</td>
+                    <tr v-for="(item,index) in data.interfaceParams">
+                      <td>{{item.params_name}}</td>
+                      <td v-if="item.params_type == 1">int</td>
+                      <td v-else-if="item.params_type == 2">long</td>
+                      <td v-else-if="item.params_type == 3">float</td>
+                      <td v-else-if="item.params_type == 4">string</td>
+                      <td v-else-if="item.params_type == 5">boolen</td>
+                      <td v-else-if="item.params_type == 6">file</td>
+                      <td v-else-if="item.params_type == 7">array</td>
+                      <td v-else-if="item.params_type == 8">json</td>
+                      <td v-else-if="item.params_type == 9">xml</td>
+                      <td v-if="item.params_necessary == 1">必传</td>
+                      <td v-else>选传</td>
+                      <td>{{item.params_explain}}</td>
                     </tr>
 
                   </table>
@@ -159,7 +188,7 @@
               <div class="interface-name">返回数据:</div>
               <div class="interface-text">
                 <div class="reponse-data">
-                  <pre v-html="jsonObj"></pre>
+                  <pre v-html="data.interfaceJson"></pre>
                 </div>
               </div>
             </div>
@@ -168,7 +197,7 @@
               <div class="interface-name">接口备注:</div>
               <div class="interface-text">
                 <div class="reponse-data">
-                  <pre v-html="note"></pre>
+                  <pre v-html="data.interfaceNote"></pre>
                 </div>
               </div>
             </div>
@@ -187,6 +216,7 @@ import vHeader from './../common/head';
 import vFooter from './../common/footer';
 import vLeftNavbar from './../common/navbar_left';
 import vApiLIstLeft from './../common/api-list-left';
+import { requestInterfaceInfo } from '../../utils/http.js';
 
 export default {
   name: 'ApiInfo',
@@ -199,23 +229,38 @@ export default {
   data () {
     return {
       title: '接口详情',
-      msg: '欢迎使用vue.js',
-      jsonObj: null,
-      note: null,
+      data: [],
     }
   },
   created () {
-    var json = "{\"username\":\"111111\",\"sex\":2}";
-
-    this.jsonObj = this.JsonToString(json);
-    this.note = "username --> 用户姓名 sex --> 用户性别";
+    this.id = this.$route.params.id;
+    this.getInterfaceInfo(this.id);
   },
   methods: {
+    getInterfaceInfo (id) {
+      var self = this;
+      var params = { id: id };
+      requestInterfaceInfo(params).then(res => {
+        console.log(res);
+        //转换返回数据
+        res.data.interfaceJson = self.JsonToString(res.data.interfaceJson);
+
+        if (res.data.interfaceParams != '[]') {
+          res.data.interfaceParams = JSON.parse(res.data.interfaceParams);
+        }
+        self.data = res.data;
+      }).catch(error => {
+        console.log(error);
+      });
+    },
     JsonToString: (json) => {
       var jObj = JSON.parse(json);
       var xxx = JSON.stringify(jObj, null, 4);
 
       return xxx;
+    },
+    ParamsToList (jsonStr) {
+      return jsonStr.parseJSON();
     }
   }
 }
